@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
+<head>
+    <link th:href="@{/css/style.css}" href="/static/css/style.css" rel="stylesheet" type="text/css"  />
+    <link th:href="@{/css/bootstrap.css}" href="/static/css/bootstrap.css" rel="stylesheet" type="text/css"  />
+    <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <meta charset="UTF-8" />
+    <title>Sopimus</title>
+</head>
+<body>
+<div class="container">
+    <div class="header clearfix">
+        <nav>
+            <ul class="nav nav-pills float-right">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+            </ul>
+        </nav>
+        <h3 class="text-muted">Frontpage</h3>
+        <form th:action="@{/addAttributes}" th:object="${Email}" method="post">
+            <input type="text" th:field="*{to}" th:placeholder="Receivers" />
+            <input type="text" th:field="*{from}" th:placeholder="from" />
+            <input type="text" th:field="*{username}" th:placeholder="Username" />
+            <input type="text" th:field="*{pass}" th:placeholder="Password" />
+            <input type="text" th:field="*{host}" th:placeholder="Host" />
+            <div class="clearfix">
+                <p><input type="submit" value="Submit" /></p>
+
+            </div>
+        </form>
+    </div>
+
+
+
+    <footer class="footer">
+        <p>&copy; Siikli 2017</p>
+    </footer>
+
+</div> <!-- /container -->
+<script>
+    $('.alert-warning').hide();
+
+    $('.input-form').focusout(function(){
+        $('.alert-warning').show();
+    });
+</script>
+</body>
+</html>
