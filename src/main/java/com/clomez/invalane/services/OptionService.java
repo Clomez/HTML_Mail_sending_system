@@ -1,5 +1,6 @@
 package com.clomez.invalane.services;
 
+import com.clomez.invalane.beans.Email;
 import com.clomez.invalane.beans.Options;
 
 import java.util.List;
@@ -7,10 +8,8 @@ import java.util.List;
 
 public interface OptionService {
 
-    void save(Options option);
+    void save(Email email);
 
-    public List<Options> getOptions();
-
-    public Options getOption(Long id);
+    List<Options> getOptions();
 
 }

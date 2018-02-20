@@ -17,5 +17,7 @@ public interface EmailService {
 
     void setEmailAttributes(Email email);
 
+    void prepareAndSend();
+
 
 }

@@ -5,14 +5,22 @@ import com.clomez.invalane.beans.Options;
 import com.clomez.invalane.repositories.OptionsRepository;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
 
+import javax.mail.internet.MimeMessage;
+import javax.websocket.Session;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 
@@ -20,7 +28,31 @@ import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 public class EmailServiceImpl implements EmailService {
 
     Email email = new Email();
-    OptionsRepository optionRepository;
+
+    private JavaMailSender mailSender;
+    private OptionService optionService;
+
+    @Autowired
+    public void MailService(JavaMailSender mailSender){
+        this.mailSender = mailSender;
+    }
+
+    public void prepareAndSend() {
+
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setFrom(email.getFrom());
+            messageHelper.setTo(email.getTo());
+            messageHelper.setSubject("subject");
+            messageHelper.setText(email.getContent());
+        };
+        try {
+            mailSender.send(messagePreparator);
+        } catch (MailException e) {
+            // runtime exception; compiler will not force you to handle it
+        }
+    }
+
 
     @Override
     public void newEmail(String date, String path, String zipdestinationString) {
@@ -39,9 +71,7 @@ public class EmailServiceImpl implements EmailService {
 
         email.setTo(email.getTo());
 
-        //optionRepository.save(email);
-
-
+        optionService.save(email);
 
     }
 

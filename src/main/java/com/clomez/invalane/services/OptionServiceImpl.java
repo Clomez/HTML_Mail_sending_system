@@ -1,5 +1,6 @@
 package com.clomez.invalane.services;
 
+import com.clomez.invalane.beans.Email;
 import com.clomez.invalane.beans.Options;
 import com.clomez.invalane.repositories.OptionsRepository;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,11 @@ public class OptionServiceImpl implements OptionService {
     OptionsRepository repository;
 
     @Override
-    public void save(Options options){}
+    public void save(Email email){
+
+
+
+    }
 
     @Override
     public List<Options> getOptions() {
@@ -24,10 +29,5 @@ public class OptionServiceImpl implements OptionService {
         return optionsList;
     }
 
-    @Override
-    public Options getOption(Long id) {
 
-        Options option = repository.findOne(id);
-        return option;
-    }
 }

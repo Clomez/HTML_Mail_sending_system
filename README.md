@@ -1,24 +1,49 @@
-##complete HTML email sending system
-
-####What is it?
+## complete HTML email sending system
+### ver 0.6 - Dangeous sharp edges
+#### 1. What is it?
 Upload zip packages of html emails to be send to multiple receivers.<br>
-receiver lists can be made, or imported from mysql, json or CSV file.
+receiver lists can be imported from json or CSV file.
 <br>[pics]
 
-####Features
+#### 2. Features
 Automatic image upload<br>
-Options<br>
+Saveable options<br>
 Compose and save receiver lists<br>
 Automate running
 
-####Technology
+#### 3. Technology
 - java spring boot
 - thymeleaf
 - mysql
-- JSON
+- Jackson / JSON
 - JPA
+- JavaMail API
 
-####How to
+#### 4. How to
 
-TODO Optio saveus, listasaveus lähteistä.
-lähetys, kuvien uppaus
+##### 4.1 install
+
+Ubuntu
+- Clone repo
+- change mysql users & db's
+- mvn package
+- cd target
+- run java -jar filename.jar
+
+##### 4.2 Requires
+- Mysql
+- Maven
+- Java
+
+##### 4.3 Use
+TODO
+
+#### 5. TODO
+- import JSON
+- import CSV
+- Use guide
+- More error handling
+
+#### 6. Licence
+
+--
