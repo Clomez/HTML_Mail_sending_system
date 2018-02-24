@@ -15,8 +15,12 @@ target/
 *.iml
 *.ipr
 
-uploads/*.jpg
-uploads/*.png
+# exclude everything
+uploads/*
+
+# exception to the rule
+!uploads/.gitkeep
+
 
 ### NetBeans ###
 nbproject/private/
