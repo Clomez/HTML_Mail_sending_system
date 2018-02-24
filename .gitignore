@@ -16,10 +16,10 @@ target/
 *.ipr
 
 # exclude everything
-uploads/*
+src/main/resources/uploads/*
 
 # exception to the rule
-!uploads/.gitkeep
+!src/main/resources/uploads/.gitkeep
 
 
 ### NetBeans ###
