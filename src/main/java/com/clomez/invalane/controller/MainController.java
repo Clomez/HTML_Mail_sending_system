@@ -40,8 +40,8 @@ public class MainController {
     String fileName;
 
 
-    private static String UPLOADED_FOLDER = "/home/clomez/Documents/email/emails/";
-    private static String RECEIVER_FOLDER = "/home/clomez/Documents/email/receivers/";
+    private static String UPLOADED_FOLDER = "src/main/resources/emails/";
+    private static String RECEIVER_FOLDER = "src/main/resources/uploads/receivers/";
 
 
     @RequestMapping("/")

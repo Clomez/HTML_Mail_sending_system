@@ -1,13 +1,16 @@
 package com.clomez.invalane.services;
 
+import com.clomez.invalane.beans.Email;
+import com.clomez.invalane.beans.Images;
+import com.clomez.invalane.repositories.ImagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -15,29 +18,60 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    ImagesRepository imagesRepository;
+
     @Override
-    public void imageUpload(String path) {
+    public void saveImages(List images) {
+        imagesRepository.save(images);
+
+    }
+
+    @Override
+    public String composeHTML(String s, List<Images> list) {
+
+        for (Images images : list){
+            String old = "img/" + images.getOriginalName();
+            String newst = images.getNewName();
+            s = s.replaceAll(old, newst);
+        }
+
+        return s;
+
+    }
+
+
+    @Override
+    public List imageUpload(String path, String name) {
+
+        String DIR_NAME =  date();
+        String FULL_DIR = "src/main/resources/uploads/" + name + DIR_NAME;
+        File dir = new File(FULL_DIR);
+        dir.mkdir();
 
         path = path + "/img/";
-        String UPLOAD_PATH = "src/main/resources/uploads/";
+        String UPLOAD_PATH = "src/main/resources/uploads/"  + name + DIR_NAME + "/";
+
         String imgName = "images";
         int count = 0;
-
-        FileInputStream in = null;
 
         File folder = new File(path);
 
         File[] listFiles = folder.listFiles();
 
+        List<Images> imagesList = new ArrayList<>();
+
+
         for (File file : listFiles) {
 
             if (file.isFile()) {
                 String Filesname = emailService.getFileExtension(file);
+                String originalName = file.getName();
 
                 if(Filesname.equals("png")){
                     try {
                         file.renameTo(new File(UPLOAD_PATH + imgName + count + ".png"));
-                        System.out.println(UPLOAD_PATH + imgName + count + ".png");
+                        imagesList.add(new Images(originalName, imgName + count + ".png"));
                         count++;
 
                     } catch (Exception e) {
@@ -46,8 +80,9 @@ public class ImageServiceImpl implements ImageService {
                 }
                 if(Filesname.equals("jpg")){
                     try{
+                        Images images = new Images();
                         file.renameTo(new File(UPLOAD_PATH + imgName + count + ".jpg"));
-                        System.out.println(UPLOAD_PATH + imgName + count + ".jpg");
+                        imagesList.add(new Images(originalName,imgName + count + ".jpg"));
                         count++;
                     }catch (Exception e){
                         e.printStackTrace();
@@ -58,6 +93,8 @@ public class ImageServiceImpl implements ImageService {
 
 
         }
+        saveImages(imagesList);
+        return imagesList;
 
     }
 }

@@ -8,11 +8,10 @@ import java.nio.file.Path;
 
 public interface EmailService {
 
-    void newEmail(String date, String path, String zipdestination);
 
     void zipReader(String name, String path);
 
-    String dataReader(String date, String path);
+    String dataReader(String path);
 
     String getFileExtension(File file);
 

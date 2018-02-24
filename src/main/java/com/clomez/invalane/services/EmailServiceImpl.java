@@ -1,8 +1,9 @@
 package com.clomez.invalane.services;
 
+import com.clomez.invalane.beans.ContentHolder;
 import com.clomez.invalane.beans.Email;
+import com.clomez.invalane.beans.Images;
 import com.clomez.invalane.beans.Options;
-import com.clomez.invalane.repositories.OptionsRepository;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 
-
-import javax.mail.internet.MimeMessage;
-import javax.websocket.Session;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 
@@ -30,6 +29,8 @@ public class EmailServiceImpl implements EmailService {
     Email email = new Email();
 
     private JavaMailSender mailSender;
+
+    ContentHolder contentHolder = new ContentHolder();
 
     @Autowired
     ImageService imageService;
@@ -57,13 +58,6 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void newEmail(String date, String path, String zipdestinationString) {
-
-       email.setContent(dataReader(path, zipdestinationString));
-
-    }
-
-    @Override
     public void setEmailAttributes(Options options) {
 
         email.setHost(options.getHosto());
@@ -85,19 +79,23 @@ public class EmailServiceImpl implements EmailService {
             ZipFile zipFile = new ZipFile(zipsource);
             zipFile.extractAll(zipdestination);
 
+            String s = dataReader( zipdestination);
+            List<Images> imagesList = new ArrayList<>();
+            imagesList = imageService.imageUpload(zipdestination, name);
+            String st = imageService.composeHTML(s, imagesList);
+            contentHolder.setContent(st);
+
+
         }catch (ZipException e) {
             e.printStackTrace();
         }
-
-        newEmail(date, path, zipdestination);
-        imageService.imageUpload(zipdestination);
 
 
 
     }
 
     @Override
-    public String dataReader(String date, String zipdestinationString) {
+    public String dataReader(String zipdestinationString) {
 
         FileInputStream in = null;
 

@@ -1,6 +1,12 @@
 package com.clomez.invalane.services;
 
+import com.clomez.invalane.beans.Images;
+
+import java.util.List;
+
 public interface ImageService {
 
-    void imageUpload(String path);
+    List imageUpload(String path, String name);
+    void saveImages(List images);
+    String composeHTML(String s, List<Images> list);
 }
