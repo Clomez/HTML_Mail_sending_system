@@ -32,6 +32,9 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
 
     @Autowired
+    ImageService imageService;
+
+    @Autowired
     public void MailService(JavaMailSender mailSender){
         this.mailSender = mailSender;
     }
@@ -87,6 +90,8 @@ public class EmailServiceImpl implements EmailService {
         }
 
         newEmail(date, path, zipdestination);
+        imageService.imageUpload(zipdestination);
+
 
 
     }
