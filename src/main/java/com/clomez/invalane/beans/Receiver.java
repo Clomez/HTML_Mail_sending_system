@@ -12,6 +12,17 @@ public class Receiver {
     Long id;
 
     String name;
+
+    @Override
+    public String toString() {
+        return "Receiver{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", list='" + list + '\'' +
+                '}';
+    }
+
     String email;
     String list;
 

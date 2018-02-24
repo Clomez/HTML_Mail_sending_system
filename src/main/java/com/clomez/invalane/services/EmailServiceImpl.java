@@ -30,7 +30,6 @@ public class EmailServiceImpl implements EmailService {
     Email email = new Email();
 
     private JavaMailSender mailSender;
-    private OptionService optionService;
 
     @Autowired
     public void MailService(JavaMailSender mailSender){
@@ -62,16 +61,13 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void setEmailAttributes(Email email) {
+    public void setEmailAttributes(Options options) {
 
-        email.setHost(email.getHost());
-        email.setFrom(email.getFrom());
-        email.setUsername(email.getUsername());
-        email.setPass(email.getPass());
+        email.setHost(options.getHosto());
+        email.setFrom(options.getFromo());
+        email.setUsername(options.getUsernameo());
+        email.setPass(options.getPasso());
 
-        email.setTo(email.getTo());
-
-        optionService.save(email);
 
     }
 

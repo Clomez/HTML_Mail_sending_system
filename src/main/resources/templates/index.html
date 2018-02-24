@@ -14,13 +14,16 @@
         <nav>
             <ul class="nav nav-pills float-right">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="/send">New mail</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/ComposeList">New receiver list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/makeOptions">New options </a>
                 </li>
             </ul>
         </nav>
@@ -30,15 +33,11 @@
     </div>
 
     <div class="jumbotron">
-        <h3 class="display-4 search">Asiakashaku:</h3>
-        <form action="#" class="form-frontpage">
-            <p>Hae: <input class="input-form" type="text"  /></p>
+        <h3 class="display-4 search">Mailing system:</h3>
+        <a type="button" href="/send" class="btn btn-down btn-success">New mail</a>
+        <a type="button" href="/ComposeList" class="btn btn-down btn-success">New receiver list</a>
+        <a type="button" href="#" class="btn btn-down btn-success">New options</a>
 
-        </form>
-        <div class="alert alert-warning">
-            <strong>Asiakkuutta ei löytynyt.</strong> <br />
-            <a type="button" href="/sopimus" class="btn btn-down btn-success">Luodaanko uusi asiakkuus?</a>
-        </div>
     </div>
 
 
@@ -47,12 +46,6 @@
     </footer>
 
 </div> <!-- /container -->
-<script>
-    $('.alert-warning').hide();
 
-    $('.input-form').focusout(function(){
-        $('.alert-warning').show();
-    });
-</script>
 </body>
 </html>

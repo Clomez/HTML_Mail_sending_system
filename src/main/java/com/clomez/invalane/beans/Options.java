@@ -12,22 +12,13 @@ public class Options {
     @GeneratedValue
     Long id;
 
-    String to;
+    private String nameo;
 
-    String name;
+    private String fromo;
+    private String usernameo;
+    private String passo;
 
-    String from;
-    String username;
-    String pass;
-
-    String host;
-
-    String content;
-
-    String emailList;
-
-    public Options() {
-    }
+    private String hosto;
 
     public Long getId() {
         return id;
@@ -37,79 +28,55 @@ public class Options {
         this.id = id;
     }
 
-    public String getTo() {
-        return to;
+    public String getNameo() {
+        return nameo;
     }
 
-    public void setTo(String to) {
-        this.to = to;
+    public void setNameo(String nameo) {
+        this.nameo = nameo;
     }
 
-    public String getName() {
-        return name;
+    public String getFromo() {
+        return fromo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFromo(String fromo) {
+        this.fromo = fromo;
     }
 
-    public String getFrom() {
-        return from;
+    public String getUsernameo() {
+        return usernameo;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setUsernameo(String usernameo) {
+        this.usernameo = usernameo;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPasso() {
+        return passo;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPasso(String passo) {
+        this.passo = passo;
     }
 
-    public String getPass() {
-        return pass;
+    public String getHosto() {
+        return hosto;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setHosto(String hosto) {
+        this.hosto = hosto;
     }
 
-    public String getHost() {
-        return host;
+    public Options(String nameo, String fromo, String usernameo, String passo, String hosto) {
+        this.nameo = nameo;
+        this.fromo = fromo;
+        this.usernameo = usernameo;
+        this.passo = passo;
+        this.hosto = hosto;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+    public Options() {
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getEmailList() {
-        return emailList;
-    }
-
-    public void setEmailList(String emailList) {
-        this.emailList = emailList;
-    }
-
-    public Options(String to, String name, String from, String username, String pass, String host, String content, String emailList) {
-
-        this.to = to;
-        this.name = name;
-        this.from = from;
-        this.username = username;
-        this.pass = pass;
-        this.host = host;
-        this.content = content;
-        this.emailList = emailList;
     }
 }

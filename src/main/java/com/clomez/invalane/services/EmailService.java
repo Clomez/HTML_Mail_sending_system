@@ -1,6 +1,7 @@
 package com.clomez.invalane.services;
 
 import com.clomez.invalane.beans.Email;
+import com.clomez.invalane.beans.Options;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,7 +16,7 @@ public interface EmailService {
 
     String getFileExtension(File file);
 
-    void setEmailAttributes(Email email);
+    void setEmailAttributes(Options options);
 
     void prepareAndSend();
 

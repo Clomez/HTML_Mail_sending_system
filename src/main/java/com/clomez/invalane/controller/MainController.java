@@ -2,8 +2,11 @@ package com.clomez.invalane.controller;
 
 import com.clomez.invalane.beans.Email;
 import com.clomez.invalane.beans.Options;
+import com.clomez.invalane.beans.Receiver;
 import com.clomez.invalane.services.EmailService;
 import com.clomez.invalane.services.OptionService;
+import com.clomez.invalane.services.ReceiverService;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,14 +27,21 @@ public class MainController {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    ReceiverService receiverService;
+
+    @Autowired
+    OptionService optionService;
+
     Email holder = new Email();
+    Options optionsHolder = new Options();
 
     String RList;
     String fileName;
 
-    private OptionService optionService;
 
-    private static String UPLOADED_FOLDER = "/home/clomez/Documents/email/";
+    private static String UPLOADED_FOLDER = "/home/clomez/Documents/email/emails/";
+    private static String RECEIVER_FOLDER = "/home/clomez/Documents/email/receivers/";
 
 
     @RequestMapping("/")
@@ -39,11 +50,10 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/new")
-    public String newMail() {
+    /////////////////////////////////////////////
+    // UPLOAD ZIP SERVICE
+    /////////////////////////////////////////
 
-        return "sendMail/newMail";
-    }
     @PostMapping("/addMail")
     public String add(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes) {
 
@@ -66,39 +76,36 @@ public class MainController {
             e.printStackTrace();
         }
 
-        return "redirect:send";
+        return "redirect:confirm";
     }
+    /////////////////////////////////////////////
+    // EMAIL SERVICE
+    /////////////////////////////////////////
     @GetMapping("/send")
     public String send(Model model) {
+
         List<Options> options;
+        List<Receiver> list;
+
+        receiverService.getList();
 
         try{
             options = optionService.getOptions();
             model.addAttribute("Options", options );
+            model.addAttribute("option", optionsHolder);
 
         }catch (NullPointerException e){
          System.out.println("There was no options");
+
+            model.addAttribute("email", new Email());
+            model.addAttribute("option", optionsHolder);
+            return "sendMail/newMail";
         }
 
-        model.addAttribute("Email", new Email());
+        model.addAttribute("email", new Email());
 
 
-        return "sendMail/addAttributes";
-    }
-
-    @PostMapping("/addAttributes")
-    public String addAttributes(@ModelAttribute Email email) {
-
-        try{
-            emailService.setEmailAttributes(email);
-        }catch (NullPointerException e) {
-            System.out.println("There was no attributes");
-            return "redirect:send";
-        }
-
-        holder = email;
-
-        return "redirect:confirm";
+        return "sendMail/newMail";
     }
 
     @GetMapping("/confirm")
@@ -108,12 +115,22 @@ public class MainController {
         model.addAttribute("RecepientList", RList);
         model.addAttribute("FileName", fileName);
 
+        try{
+
+        }catch (NullPointerException e) {
+            System.out.println("There was no attributes");
+            return "redirect:send";
+        }
+
+
         return "sendMail/confirm";
     }
     @PostMapping("/postMail")
-    public String sendMail() {
+    public String sendMail(@ModelAttribute Options option) {
 
         try{
+            emailService.setEmailAttributes(optionService.getOption(option.getId()));
+
             emailService.prepareAndSend();
         }catch (UnknownError e){
             return "redirect:sendMail/error";
@@ -121,4 +138,62 @@ public class MainController {
         return "/";
     }
 
+    /////////////////////////////////////////////
+    // RECEIVER SERVICE
+    /////////////////////////////////////////
+    @GetMapping("/ComposeList")
+    public String compose(Model model){
+
+        String type = null;
+
+        model.addAttribute("type", type);
+
+        return "makeLists";
+    }
+    @PostMapping("/addList")
+    public String addList(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes, String type, String name) {
+
+
+        if (file.isEmpty()){
+            redirectAttributes.addFlashAttribute("message", "Please select a file");
+
+            return "redirect:new";
+        }
+        try{
+            System.out.println(type);
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(RECEIVER_FOLDER + file.getOriginalFilename());
+            Files.write(path, bytes);
+            fileName = file.getOriginalFilename();
+            String full_name = RECEIVER_FOLDER + file.getOriginalFilename();
+            receiverService.composeList(type, full_name, name);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "error";
+        }
+
+        return "redirect:confirm";
+    }
+    /////////////////////////////////////////////
+    // OPTIONS SERVICE
+    /////////////////////////////////////////
+    @GetMapping("/makeOptions")
+    public String makeOptions(Model model) {
+
+        Options options = new Options();
+        model.addAttribute("options", options);
+
+        return "makeOptions";
+    }
+    @PostMapping("/addOptions")
+    public String addOptions(@ModelAttribute Options options){
+        try {
+            optionService.save(options);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
+        return "redirect:/";
+    }
 }

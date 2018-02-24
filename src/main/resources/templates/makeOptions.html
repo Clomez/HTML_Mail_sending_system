@@ -8,24 +8,33 @@
     <title>Sopimus</title>
 </head>
 <body>
+
 <div class="container">
     <div class="header clearfix">
         <nav>
             <ul class="nav nav-pills float-right">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/">Home </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="/send">New mail</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="/ComposeList">New receiver list</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/makeOptions">New options <span class="sr-only">(current)</span></a>
                 </li>
             </ul>
         </nav>
         <h3 class="text-muted">Frontpage</h3>
-        <form th:action="@{/addAttributes}" th:object="${Email}" method="post">
-            <input type="text" th:field="*{to}" th:placeholder="Receivers" />
+        <p th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</p>
+
+    </div>
+
+    <div class="jumbotron">
+        <h3 class="display-4 search">Mailing system:</h3>
+        <form th:action="@{/addOptions}" th:object="${options}" method="post">
             <input type="text" th:field="*{from}" th:placeholder="from" />
             <input type="text" th:field="*{username}" th:placeholder="Username" />
             <input type="text" th:field="*{pass}" th:placeholder="Password" />
@@ -38,18 +47,11 @@
     </div>
 
 
-
     <footer class="footer">
-        <p>&copy; Siikli 2017</p>
+        <p>&copy; Clomez 2018</p>
     </footer>
 
 </div> <!-- /container -->
-<script>
-    $('.alert-warning').hide();
 
-    $('.input-form').focusout(function(){
-        $('.alert-warning').show();
-    });
-</script>
 </body>
 </html>
