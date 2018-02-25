@@ -1,23 +1,24 @@
 package com.clomez.invalane.services;
 
-import com.clomez.invalane.beans.Email;
-import com.clomez.invalane.beans.Options;
+import com.clomez.invalane.beans.Receiver;
 
 import java.io.File;
-import java.nio.file.Path;
+import java.util.List;
 
 public interface EmailService {
 
 
-    void zipReader(String name, String path);
+    void zipReader(String name, String path, String receiver, String fromo);
 
     String dataReader(String path);
 
     String getFileExtension(File file);
 
-    void setEmailAttributes(Options options);
+    void prepareAndSend(String zipdestination, String name, String receiver);
 
-    void prepareAndSend();
+    void confirm(List<Receiver> list, String st);
+
+    void confirmOptions();
 
 
 }

@@ -31,7 +31,38 @@
 
     <div class="jumbotron">
         <h3 class="display-4 search">Confirm sending:</h3>
+        <table class="table">
+            <thead class="thead-dark" style="background-color:darkslategray; color: white;">
+            <tr>
+                <td>Receiver list:</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emp,iterationStatus  : ${receiver}">
+                <td class="clicker" th:text="${emp}">001</td>
+            </tr>
 
+            </tbody>
+        </table>
+        <table class="table">
+            <thead class="thead-dark" style="background-color:darkslategray; color: white;">
+            <tr>
+                <td>Filename:</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emt,iterationStatus  : ${FileName}">
+                <td class="clicker" th:text="${emt}">001</td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <form th:action="@{/postMail}" method="post">
+
+            <input type="submit" value="Submit" class="btn btn-dark" />
+
+        </form>
 
     </div>
 

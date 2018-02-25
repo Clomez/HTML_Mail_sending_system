@@ -23,26 +23,33 @@ Automated scheduled running
 - JPA
 - JavaMail API
 #### 4. How to
-##### 4.1 install
+##### 4.1 full install
 Ubuntu
-- Install mysql
 - Create database & user
 - Clone repo
-- change mysql users & db info from application.properties
-- mvn package
+- Adjust application.properties
+- run start.sh
 - cd target
 - run java -jar filename.jar
 
 ##### 4.2 Requires
+##### 4.2.1 for local image upload
+- ubuntu
+- Apache2
+- enable userdir in apache2 [Tutorial](http://www.techytalk.info/enable-userdir-apache-module-ubuntu-debian-based-linux-distributions/)
+- userdir should be home/public_html
+##### 4.2.2 for remote upload
 - Mysql
 - Maven
 - Java
 
 ##### 4.3 Use
 ##### 4.3.1 zip packages
+<b>Max size: 5MB</b><br>
+Max size can be changed in application.properties.<br>
 Uploaded zip file should contain just two files, <br>
 .html file to be used in email, and pictures in a folder.
-- img folder
+- img folder (.jpg / .png / .gif only)
 - .html document
 
 HTML files and img are now stored in folder.
@@ -54,8 +61,9 @@ Lists are kept in mysql database, and can be reused.
 Are asked after uploading a zip file.<br>
 These can be saved in mysql for reuse.<br>
 #### 5. TODO
+- Remote img upload
 - More personalization
-- Option to turn off storage
+- Options page
 - import CSV
 - Better user guide
 - More error handling

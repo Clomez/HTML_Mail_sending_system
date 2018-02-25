@@ -1,11 +1,9 @@
 package com.clomez.invalane.services;
 
-import com.clomez.invalane.beans.ContentHolder;
-import com.clomez.invalane.beans.Email;
-import com.clomez.invalane.beans.Images;
-import com.clomez.invalane.beans.Options;
+import com.clomez.invalane.beans.*;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -26,83 +24,98 @@ import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    Email email = new Email();
-
     private JavaMailSender mailSender;
 
-    ContentHolder contentHolder = new ContentHolder();
+    //HOLD FROM ATTRIBUTE
+    private String fromoHolder;
+
+    //CONFIRMATION HOLDERS FROM PREPARE
+    private List<Receiver> ReceiverListHolder;
+    private String st;
 
     @Autowired
     ImageService imageService;
+
+    @Autowired
+    PersonalizeService personalizeService;
+
+    @Autowired
+    OptionService optionService;
+
+    @Autowired
+    ReceiverService receiverService;
 
     @Autowired
     public void MailService(JavaMailSender mailSender){
         this.mailSender = mailSender;
     }
 
-    public void prepareAndSend() {
+    public void prepareAndSend(String zipdestination, String name, String receiver) {
 
-        MimeMessagePreparator messagePreparator = mimeMessage -> {
-            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-            messageHelper.setFrom(email.getFrom());
-            messageHelper.setTo(email.getTo());
-            messageHelper.setSubject("subject");
-            messageHelper.setText(email.getContent());
-        };
-        try {
-            mailSender.send(messagePreparator);
-        } catch (MailException e) {
-            // runtime exception; compiler will not force you to handle it
+        String s = dataReader(zipdestination);
+        List<Images> imagesList = new ArrayList<>();
+        imagesList = imageService.imageUpload(zipdestination, name);
+        st = imageService.composeHTML(s, imagesList);
+
+       ReceiverListHolder = receiverService.getList(receiver);
+
+    }
+
+    public void confirmOptions() {
+
+        personalizeService.personalize(st, ReceiverListHolder);
+
+    }
+
+    @Override
+    public void confirm(List<Receiver> list, String st) {
+        for (Receiver d : list){
+
+            System.out.println("Fromo holder " + fromoHolder);
+
+            MimeMessagePreparator messagePreparator = mimeMessage -> {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                messageHelper.setFrom(fromoHolder);
+                messageHelper.setTo(d.getEmail());
+                messageHelper.setSubject("subject");
+                messageHelper.setText(st);
+            };
+            try {
+                mailSender.send(messagePreparator);
+            } catch (MailException e) {
+                System.out.println(e);
+            }
         }
-    }
-
-
-    @Override
-    public void setEmailAttributes(Options options) {
-
-        email.setHost(options.getHosto());
-        email.setFrom(options.getFromo());
-        email.setUsername(options.getUsernameo());
-        email.setPass(options.getPasso());
-
 
     }
 
     @Override
-    public void zipReader(String name, String path){
+    public void zipReader(String name, String path, String receiver, String fromo){
 
         String zipsource = path + name;
         String date = date();
         String zipdestination = path + date;
+        fromoHolder = fromo;
 
         try {
             ZipFile zipFile = new ZipFile(zipsource);
             zipFile.extractAll(zipdestination);
-
-            String s = dataReader( zipdestination);
-            List<Images> imagesList = new ArrayList<>();
-            imagesList = imageService.imageUpload(zipdestination, name);
-            String st = imageService.composeHTML(s, imagesList);
-            contentHolder.setContent(st);
-
+            prepareAndSend(zipdestination, name, receiver);
 
         }catch (ZipException e) {
             e.printStackTrace();
         }
-
-
 
     }
 
     @Override
     public String dataReader(String zipdestinationString) {
 
-        FileInputStream in = null;
-
         File folder = new File(zipdestinationString);
 
         File[] listFiles = folder.listFiles();
 
+        assert listFiles != null;
         for (File file : listFiles) {
 
             if (file.isFile()) {
@@ -114,8 +127,7 @@ public class EmailServiceImpl implements EmailService {
 
                     try {
                         byte[] encoded = Files.readAllBytes(Paths.get(zipdestinationString + "/" + Filename));
-                        String s = new String(encoded);
-                        return s;
+                        return new String(encoded);
 
                     } catch (IOException e) {
                         e.printStackTrace();

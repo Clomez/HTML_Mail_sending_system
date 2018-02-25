@@ -1,12 +1,10 @@
 package com.clomez.invalane.controller;
 
-import com.clomez.invalane.beans.Email;
 import com.clomez.invalane.beans.Options;
-import com.clomez.invalane.beans.Receiver;
+import com.clomez.invalane.repositories.OptionsRepository;
 import com.clomez.invalane.services.EmailService;
 import com.clomez.invalane.services.OptionService;
 import com.clomez.invalane.services.ReceiverService;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,16 +30,20 @@ public class MainController {
     @Autowired
     OptionService optionService;
 
-    Email holder = new Email();
-    Options optionsHolder = new Options();
-
-    String RList;
-    String fileName;
+    @Autowired
+    OptionsRepository optionsRepository;
 
 
+    // SETTINGS AND HOLDERS
     private static String UPLOADED_FOLDER = "src/main/resources/emails/";
-    private static String RECEIVER_FOLDER = "src/main/resources/uploads/receivers/";
+    private static String RECEIVER_FOLDER = "src/main/resources/receivers/";
+    private String fileNameHolder;
+    private String optionHolder;
 
+    //EMAIL ATTRIBUTES
+    List<Options> options;
+    List<String> list;
+    String fromo;
 
     @RequestMapping("/")
     public String home() {
@@ -55,21 +56,23 @@ public class MainController {
     /////////////////////////////////////////
 
     @PostMapping("/addMail")
-    public String add(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes) {
+    public String add(@RequestParam("file")MultipartFile file, RedirectAttributes redirectAttributes, String options, String receiver, String fromo2) {
+
 
         if (file.isEmpty()){
             redirectAttributes.addFlashAttribute("message", "Please select a file");
 
-            return "redirect:new";
+            return "error/settingError";
         }
         try{
-
+            fromo = fromo2;
+            optionHolder = options;
             byte[] bytes = file.getBytes();
             Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
             String name = file.getOriginalFilename();
             Files.write(path, bytes);
-            fileName = file.getOriginalFilename();
-            emailService.zipReader(name, UPLOADED_FOLDER);
+            fileNameHolder = file.getOriginalFilename();
+            emailService.zipReader(name, UPLOADED_FOLDER, receiver, fromo);
 
 
         } catch (IOException e) {
@@ -84,58 +87,50 @@ public class MainController {
     @GetMapping("/send")
     public String send(Model model) {
 
-        List<Options> options;
-        List<Receiver> list;
+        list = receiverService.getLists();
 
-        receiverService.getList();
 
         try{
             options = optionService.getOptions();
             model.addAttribute("Options", options );
-            model.addAttribute("option", optionsHolder);
-
-        }catch (NullPointerException e){
-         System.out.println("There was no options");
-
-            model.addAttribute("email", new Email());
-            model.addAttribute("option", optionsHolder);
+            model.addAttribute("receiver", list);
+            model.addAttribute("fromo", fromo);
             return "sendMail/newMail";
+
+
+        }catch (Exception e){
+         System.out.println("Problem with options");
+            return "error/settingError";
         }
 
-        model.addAttribute("email", new Email());
-
-
-        return "sendMail/newMail";
     }
 
     @GetMapping("/confirm")
     public String confirm(Model model) {
 
-        model.addAttribute("Holder", holder);
-        model.addAttribute("RecepientList", RList);
-        model.addAttribute("FileName", fileName);
+        model.addAttribute("receiver", list);
+        model.addAttribute("Options", options);
+        model.addAttribute("FileName", fileNameHolder);
 
         try{
 
-        }catch (NullPointerException e) {
-            System.out.println("There was no attributes");
+        }catch (Exception e) {
+            System.out.println(e);
             return "redirect:send";
         }
-
 
         return "sendMail/confirm";
     }
     @PostMapping("/postMail")
-    public String sendMail(@ModelAttribute Options option) {
+    public String sendMail() {
 
         try{
-            emailService.setEmailAttributes(optionService.getOption(option.getId()));
+            emailService.confirmOptions();
 
-            emailService.prepareAndSend();
         }catch (UnknownError e){
             return "redirect:sendMail/error";
         }
-        return "/";
+        return "sendMail/success";
     }
 
     /////////////////////////////////////////////
@@ -164,7 +159,7 @@ public class MainController {
             byte[] bytes = file.getBytes();
             Path path = Paths.get(RECEIVER_FOLDER + file.getOriginalFilename());
             Files.write(path, bytes);
-            fileName = file.getOriginalFilename();
+            fileNameHolder = file.getOriginalFilename();
             String full_name = RECEIVER_FOLDER + file.getOriginalFilename();
             receiverService.composeList(type, full_name, name);
 
@@ -173,7 +168,7 @@ public class MainController {
             return "error";
         }
 
-        return "redirect:confirm";
+        return "redirect:/";
     }
     /////////////////////////////////////////////
     // OPTIONS SERVICE
@@ -195,5 +190,12 @@ public class MainController {
         }
 
         return "redirect:/";
+    }
+    /////////////////////////////////////////////
+    // EMAIL SERVICE
+    /////////////////////////////////////////
+    @GetMapping("/error")
+    public String mainError() {
+        return "error/error";
     }
 }

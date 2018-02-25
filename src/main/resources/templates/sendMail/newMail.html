@@ -5,7 +5,7 @@
     <link th:href="@{/css/bootstrap.css}" href="/static/css/bootstrap.css" rel="stylesheet" type="text/css"  />
     <script type="text/javascript" th:src="@{/js/jquery-3.3.1.min.js}"></script>
     <meta charset="UTF-8" />
-    <title>Sopimus</title>
+    <title>New mail</title>
 </head>
 <body>
 <div class="container">
@@ -32,8 +32,42 @@
     <div class="jumbotron">
         <h3 class="display-4 search">New email:</h3>
         <form th:action="@{/addMail}" enctype="multipart/form-data" method="post">
-            <input type="file" name="file" /><br/><br/>
-            <input type="submit" value="Submit" />
+
+                <table class="table">
+                    <thead class="thead-dark" style="background-color:darkslategray; color: white;">
+                        <tr>
+                            <td>Click to select list</td>
+                            <td>Receiver lists:</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="emp,iterationStatus  : ${receiver}">
+                            <td th:text="${iterationStatus.count}">1</td>
+                            <td class="clicker" th:text="${emp}">001</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            <table class="table">
+                <thead class="thead-dark" style="background-color:darkslategray; color: white;">
+                <tr>
+                    <td>Click to select options</td>
+                    <td>Available options:</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="opt,iterationStatus  : ${Options}">
+                    <td th:text="${iterationStatus.count}">1</td>
+                    <td class="clickerOptions" th:text="${opt.nameo}">001</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <input type="text" name="receiver" placeholder="Receiver list" class="receiver form-control" /><br/>
+            <input type="text" name="options" placeholder="options" class="options form-control" /><br/>
+            <input type="text" name="fromo2" placeholder="From address" class="form-control" /><br/>
+            <input type="file" name="file" class="btn btn-dark" /><br/><br/>
+            <input type="submit" value="Submit" class="btn btn-dark" />
 
         </form>
 
@@ -41,15 +75,20 @@
 
 
     <footer class="footer">
-        <p>&copy; Siikli 2017</p>
+        <p>&copy; CLomez 2018</p>
     </footer>
 
 </div> <!-- /container -->
 <script>
-    $('.alert-warning').hide();
+    $( ".clicker" ).click(function() {
+        var str = $( ".clicker" ).text();
+        $( ".receiver" ).val( str );
 
-    $('.input-form').focusout(function(){
-        $('.alert-warning').show();
+    });
+    $( ".clickerOptions" ).click(function() {
+        var str = $( ".clickerOptions" ).text();
+        $( ".options" ).val( str );
+
     });
 </script>
 </body>

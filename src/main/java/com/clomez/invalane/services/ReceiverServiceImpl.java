@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ReceiverServiceImpl implements ReceiverService{
@@ -26,7 +29,6 @@ public class ReceiverServiceImpl implements ReceiverService{
             List<Receiver> list = mapper.readValue(new File(full_name), new TypeReference<List<Receiver>>(){});
             for (Receiver obj : list) {
                 obj.setList(listName);
-                System.out.println(obj.toString());
                 repository.save(obj);
             }
 
@@ -34,20 +36,36 @@ public class ReceiverServiceImpl implements ReceiverService{
         if (type.equals("CSV")) {
 
         }
-        else{
-
-        }
 
     }
 
-    public List<Receiver> getList(){
+    public List<Receiver> getList(String list){
 
         List<Receiver> receivers;
-
-        receivers = (List<Receiver>) repository.findAll();
+        receivers = repository.findReceiversByList(list);
 
         return receivers;
 
+
+    }
+
+    @Override
+    public List<String> getLists() {
+
+        List<String> diffLists = new ArrayList<>();
+        List<Receiver> list = (List<Receiver>) repository.findAll();
+
+        Set<String> clear = new HashSet<>();
+
+        for (Receiver e : list) {
+          String test = e.getList();
+          diffLists.add(test);
+        }
+        clear.addAll(diffLists);
+        diffLists.clear();
+        diffLists.addAll(clear);
+
+        return diffLists;
 
     }
 }

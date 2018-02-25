@@ -8,7 +8,6 @@
     <title>Sopimus</title>
 </head>
 <body>
-
 <div class="container">
     <div class="header clearfix">
         <nav>
@@ -17,33 +16,24 @@
                     <a class="nav-link" href="/">Home </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/send">New mail</a>
+                    <a class="nav-link active" href="/send">New mail <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/ComposeList">New receiver list</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/makeOptions">New options <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="/makeOptions">New options </a>
                 </li>
             </ul>
         </nav>
-        <h3 class="text-muted">Frontpage</h3>
-        <p th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</p>
-
+        <h3 class="text-muted">Error</h3>
     </div>
 
     <div class="jumbotron">
-        <h3 class="display-4 search">Mailing system:</h3>
-        <form th:action="@{/addOptions}" th:object="${options}" method="post">
-            <input type="text" th:field="*{fromo}" th:placeholder="fromo" />
-            <input type="text" th:field="*{usernameo}" th:placeholder="Usernameo" />
-            <input type="text" th:field="*{passo}" th:placeholder="Password" />
-            <input type="text" th:field="*{hosto}" th:placeholder="Host" />
-            <div class="clearfix">
-                <p><input type="submit" value="Submit" /></p>
+        <h3 class="display-4 search">Error: Sending error</h3>
+        <p>Sending error, something went wrong with sending. maybe options?</p>
 
-            </div>
-        </form>
+
     </div>
 
 
@@ -52,6 +42,12 @@
     </footer>
 
 </div> <!-- /container -->
+<script>
+    $('.alert-warning').hide();
 
+    $('.input-form').focusout(function(){
+        $('.alert-warning').show();
+    });
+</script>
 </body>
 </html>
