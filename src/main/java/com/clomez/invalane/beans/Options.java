@@ -17,6 +17,15 @@ public class Options {
     private String fromo;
     private String usernameo;
     private String passo;
+    private String localhost;
+
+    public String getLocalhost() {
+        return localhost;
+    }
+
+    public void setLocalhost(String localhost) {
+        this.localhost = localhost;
+    }
 
     private String hosto;
 

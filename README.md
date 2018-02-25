@@ -7,7 +7,8 @@ Emails can be personalized per recipient.
 <br><br><b>Example<br></b>
 In html you write <code>insert.name</code> and in send email it will be replaced with<br>
 recipients name!<br> in more complez manner, this can be used to track customers<br>
-by tags for example.<br>[pics]
+by tags for example.<br>
+[PICS](https://i.imgur.com/ik8dB2w.png)
 #### 2. Features (some coming)
 Email personalization before sending<br>
 Automatic image upload<br>
@@ -23,21 +24,24 @@ Automated scheduled running
 - JPA
 - JavaMail API
 #### 4. How to
-##### 4.1 full install
-Ubuntu
-- Create database & user
-- Clone repo
-- Adjust application.properties
-- run start.sh
-- cd target
-- run java -jar filename.jar
+##### 4.1.1 full install
+Ubuntu (Currently only full install platform)
+- you have Java, maven, mysql, apache2
+- Create database & user for mysql (as in application.properties)
+- Clone repo <code>git clone repourl</code>
+- Adjust application.properties file in project root.
+- run install.sh with <code>sudo bash install.sh password y</code><br>
+password = password for mailUser <br> y = creates needed directories for you.
+- <code>mvn package</code>
+- <code>cd target</code>
+- <code>su - mailUser -c "java -jar filename.jar"</code>
 
 ##### 4.2 Requires
 ##### 4.2.1 for local image upload
 - ubuntu
 - Apache2
 - enable userdir in apache2 [Tutorial](http://www.techytalk.info/enable-userdir-apache-module-ubuntu-debian-based-linux-distributions/)
-- userdir should be home/public_html
+- userdir should be home/*/public_html
 ##### 4.2.2 for remote upload
 - Mysql
 - Maven

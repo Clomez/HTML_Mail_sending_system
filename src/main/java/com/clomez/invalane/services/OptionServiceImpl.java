@@ -19,6 +19,7 @@ public class OptionServiceImpl implements OptionService {
         Options optionsHolder = options;
         optionsHolder.setNameo("test");
         optionsHolder.setId(0L);
+        optionsHolder.setLocalhost(options.getLocalhost());
         System.out.println(optionsHolder.toString());
         repository.save(options);
 

@@ -12,23 +12,25 @@ then
 fi
 
 #test, if both argument are there
-if [ $# -eq 1 ]; then
-username="mailUser"
-pass=$2
-
-	# Check if user already exists.
-	grep -q "$username" /etc/passwd
-	if [ $? -eq $SUCCESS ]
-	then
-	echo "User $username does already exist."
-  	echo "please chose another username."
-	exit $E_USEREXISTS
-	fi
-
+if [ $# -eq 2 ]; then
+username="mailuser"
+pass=$1
+choice=$2
 
 	useradd -p `mkpasswd "$pass"` -d /home/"$username" -m -g users -s /bin/bash "$username"
 
 	echo "the account is setup"
+
+	if [ $choice = "y" ]; then
+        mkdir /home/$username/public_html
+        mkdir /home/$username/public_html/emails
+        mkdir /home/$username/public_html/receivers
+        mkdir /home/$username/public_html/uploads
+        echo "folders are setup"
+
+	else
+	    echo "okey"
+	fi
 
 else
         echo  " this programm needs 2 arguments you have given $# "

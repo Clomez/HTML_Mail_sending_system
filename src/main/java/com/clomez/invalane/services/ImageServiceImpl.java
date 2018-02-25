@@ -2,12 +2,14 @@ package com.clomez.invalane.services;
 
 import com.clomez.invalane.beans.Images;
 import com.clomez.invalane.repositories.ImagesRepository;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 
@@ -20,10 +22,11 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     ImagesRepository imagesRepository;
 
-    //String basePath = "/home/mailUser/public_html/";
+    //TO FIX UPLOAD PATHS
+    private String currRng;
 
-    //NO USER
-    String basePath = "src/main/resources/uploads/";
+    //MAILUSER
+    String basePath = "/home/mailuser/public_html/upload/";
 
     @Override
     public void saveImages(List images) {
@@ -36,8 +39,9 @@ public class ImageServiceImpl implements ImageService {
 
         for (Images images : list){
             String old = "img/" + images.getOriginalName();
-            String newst = "localhost:8080" + images.getNewName();
+            String newst = "localhost/~mailuser/upload/" + currRng + "/" + images.getNewName();
             s = s.replaceAll(old, newst);
+            System.out.println(newst);
         }
 
         return s;
@@ -48,13 +52,15 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public List imageUpload(String path, String name) {
 
-        String DIR_NAME =  date();
-        String FULL_DIR = basePath + name + DIR_NAME;
+        int randomNum = ThreadLocalRandom.current().nextInt(1, 10000 + 1);
+        String DIR_NAME =  String.valueOf(randomNum);
+        currRng = DIR_NAME;
+        String FULL_DIR = basePath + DIR_NAME;
         File dir = new File(FULL_DIR);
         dir.mkdir();
 
         path = path + "/img/";
-        String UPLOAD_PATH = basePath  + name + DIR_NAME + "/";
+        String UPLOAD_PATH = basePath  + DIR_NAME + "/";
 
         String imgName = "images";
         int count = 0;

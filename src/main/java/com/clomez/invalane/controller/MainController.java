@@ -35,8 +35,8 @@ public class MainController {
 
 
     // SETTINGS AND HOLDERS
-    private static String UPLOADED_FOLDER = "src/main/resources/emails/";
-    private static String RECEIVER_FOLDER = "src/main/resources/receivers/";
+    private static String UPLOADED_FOLDER = "/home/mailuser/public_html/emails/";
+    private static String RECEIVER_FOLDER = "/home/mailuser/public_html/receivers/";
     private String fileNameHolder;
     private String optionHolder;
 
